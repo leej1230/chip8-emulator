@@ -55,6 +55,19 @@ public:
     uint16_t ReadIRegister() {
         return iRegister;
     }
+
+    uint8_t ReadDelayRegister() {
+        return delayRegister;
+    }
+    void WriteDelayRegister(const uint8_t value) {
+        delayRegister = value;
+    }
+    uint8_t ReadSoundRegister() {
+        return soundRegister;
+    }
+    void WriteSoundRegister(const uint8_t value) {
+        soundRegister = value;
+    }
 };
 
 #endif

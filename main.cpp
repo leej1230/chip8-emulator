@@ -1,6 +1,6 @@
 #include "common.h"
 #include "chip.h"
-#include <iomanip>
+#include <unistd.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -15,7 +15,14 @@ int main(int argc, char *argv[]) {
     if(!chip.loadROM(romPath)) {
         std::cerr << "Failed to load rom" << std::endl;
     }
+    std::cout << "Loaded rom" << std::endl;
 
+    while(true) {
+        chip.fetch();
+        chip.decodeAndExecute();
+        chip.render();
+        sleep(1);
+    }
     /*
     WindowManager window;
     std::cout << "Begin Initialize" << std::endl;

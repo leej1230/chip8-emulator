@@ -40,6 +40,11 @@ public:
         }
         screen[y][x] = 1;
     }
+    void clear() {
+        for(int i=0; i<32; ++i) {
+            std::fill(screen[i].begin(), screen[i].end(), 0);
+        }
+    }
     bool initialize() {
         if (!SDL_Init(SDL_INIT_VIDEO)) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
