@@ -20,26 +20,10 @@ int main(int argc, char *argv[]) {
     while(true) {
         chip.fetch();
         chip.decodeAndExecute();
-        chip.render();
-        sleep(1);
-    }
-    /*
-    WindowManager window;
-    std::cout << "Begin Initialize" << std::endl;
-    if(!window.initialize()) {
-        return 3;
-    }
-
-    std::cout << "Begin Rendering" << std::endl;
-    while (1) {
-        // window.addSquare(i,i);
-        if (!window.render()) {
+        if(!chip.render()) {
             break;
         }
+        sleep(1);
     }
-
-    std::cout << "Begin Destroy" << std::endl;
-    window.destroy();
-    */
     return 0;
 }

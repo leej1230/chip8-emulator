@@ -51,8 +51,8 @@ public:
         return true;
     }
 
-    void render() {
-        _window.render();
+    bool render() {
+        return _window.render();
     }
 
     void fetch() {
@@ -61,20 +61,21 @@ public:
     }
 
     void decodeAndExecute() {
-        int instructionType = instruction >> 24;
-        std::cout << std::hex << instruction << std::endl;
+        int instructionType = instruction >> 12;
+        std::cout << std::hex << "Instruction: " << instruction << std::endl;
         switch(instructionType) {
             case 0x0:
             {
                 int addr = (int)(instruction & 0x0FFF);
                 if (addr == 0x0E0) {
                     // 00E0 clear display
-                    std::cout << "Display cleared" << std::endl;
                     _window.clear();
                 } else if (addr == 0x0EE) {
                     // 00EE return from subroutine
+                    std::cout << "Instruction not yet implemented!" << std::endl;
                 } else {
                     // 0nnn jump to machine code routine
+                    std::cout << "Instruction not yet implemented!" << std::endl;
                 }
                 break;
             }
@@ -130,17 +131,21 @@ public:
             {
                 // 6xkk set kk to Vx
                 int registerIndex = (int)(instruction & 0x0F00) >> 8;
-                uint8_t byteValue = (uint8_t)(instruction & 0x00FF);
-                registers.WriteGeneralRegister(registerIndex, byteValue);
+                int byteValue = (int)(instruction & 0x00FF);
+                std::cout << "registerIndex: " << registerIndex << std::endl;
+                std::cout << "byteValue: " << byteValue << std::endl;
+                registers.WriteGeneralRegister(registerIndex, (uint8_t)byteValue);
                 break;
             }
             case 0x7:
             {
                 // 7xkk Vx += kk
                 int registerIndex = (int)(instruction & 0x0F00) >> 8;
-                uint8_t registerValue = registers.ReadGeneralRegister(registerIndex);
-                uint8_t byteValue = (uint8_t)(instruction & 0x00FF);
-                registers.WriteGeneralRegister(registerIndex, registerValue+byteValue);
+                int registerValue = (int)registers.ReadGeneralRegister(registerIndex);
+                int byteValue = (int)(instruction & 0x00FF);
+                std::cout << "registerValue: " << registerValue << std::endl;
+                std::cout << "byteValue: " << byteValue << std::endl;
+                registers.WriteGeneralRegister(registerIndex, (uint8_t)registerValue+byteValue);
                 break;
             }
             case 0x8:
@@ -259,16 +264,24 @@ public:
                 const int registerValue2 = registers.ReadGeneralRegister(registerIndex2);
                 const int drawBytes = (int)(instruction & 0x000F);
                 const uint16_t iAddr = registers.ReadIRegister();
+                std::cout << "====draw====" << std::endl;
+                std::cout << "registerIndex1: " << registerIndex1 << std::endl;
+                std::cout << "registerIndex2: " << registerIndex2 << std::endl;
+                std::cout << "registerValue1: " << registerValue1 << std::endl;
+                std::cout << "registerValue2: " << registerValue2 << std::endl;
+                std::cout << "drawbytes: " << drawBytes << std::endl;
+                std::cout << "iAddr: " << iAddr << std::endl;
                 for(int currentByte=0; currentByte<drawBytes; ++currentByte) {
                     uint8_t spriteData = memory.ReadData(iAddr+currentByte);
+                    std::cout << "spriteData: " << std::hex << (int)memory.ReadData(iAddr+currentByte) << std::endl;
                     for(int currentBit=0; currentBit<8; ++currentBit) {
-                        if(((spriteData >> currentBit) & 1) != 1){
+                        if(((spriteData >> (7-currentBit)) & 1) != 1){
                             continue;
                         }
                         _window.addSquare(registerValue1+currentBit, registerValue2+currentByte);
                     }
                 }
-                _window.render();
+                std::cout << "====end====" << std::endl;
                 break;
             }
             case 0xE:
@@ -277,9 +290,11 @@ public:
                 switch(lastByte){
                     case 0x9E:
                         // Ex9E Checks value in Vx and if the value is pressed in keyboard, skip next instruction
+                        std::cout << "Instruction not yet implemented!" << std::endl;
                         break;
                     case 0xA1:
                         // ExA1 Skip next instruction if value in Vx is NOT pressed
+                        std::cout << "Instruction not yet implemented!" << std::endl;
                         break;
                     default:
                         std::cerr << "Unsupported instruction: " << std::hex << instruction << std::endl;

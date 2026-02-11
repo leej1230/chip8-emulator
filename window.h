@@ -38,7 +38,7 @@ public:
             y >= 32) {
             return;
         }
-        screen[y][x] = 1;
+        screen[y][x] ^= 1;
     }
     void clear() {
         for(int i=0; i<32; ++i) {
